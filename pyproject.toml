@@ -1,0 +1,14 @@
+[project]
+name = "ebay-handbrake-wrapper"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "pyusb",
+    "vgamepad>=0.1.0",
+]
+
+[project.scripts]
+ebay-handbrake = "ebay_handbrake.main:main"
+
+[tool.pyright]
+typeCheckingMode = "basic"
