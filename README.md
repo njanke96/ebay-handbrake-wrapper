@@ -1,44 +1,72 @@
 # ebay-handbrake-wrapper
 
-Bridges cheap no-name USB handbrake devices (the kind found on eBay/AliExpress) to a virtual Xbox 360 controller using [vgamepad](https://github.com/yannbouteiller/vgamepad). The handbrake input is mapped to the right trigger of the virtual gamepad.
+Simple Python script that bridges cheap no-name USB handbrake devices (the kind found on eBay/AliExpress) to a virtual Xbox 360 controller using [vgamepad](https://github.com/yannbouteiller/vgamepad). The handbrake input is mapped to the right trigger of the virtual gamepad.
 
-Linux only.
+For handbrakes that are recognized by `lsusb` as a `Bus 001 Device 007: ID 046d:c219 Logitech, Inc. F710 Gamepad [DirectInput Mode]`.
 
-## udev rule
+Only Linux is supported, if your handbrake is not working on Windows, this is not the solution!
 
-Copy the included udev rule so the device can be accessed without root:
+## Caveats
+
+- Most games will have existing bindings for RT (probably throttle). Make sure to clear these.
+- If a game supports X360 controllers but not rebinding its default controls, this won't work.
+  - I can't imagine a game that would support both racing wheels AND not support control rebinding, but who knows.
+- If you use an X360 controller along with a handbrake, this won't work unless the game supports multiple X360 controllers.
+
+## Quickstart
+
+1. Clone the repo:
 
 ```sh
+git clone https://github.com/njanke96/ebay-handbrake-wrapper.git
+```
+
+2. Copy the included udev rule so the device can be accessed without root:
+
+```sh
+cd path/to/repo
 sudo cp udev-rule/99-ebay-handbrake.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 ```
 
-Then unplug and replug the handbrake.
+3. Unplug (if plugged in) and (re)plug in the handbrake.
 
-## Installation
+4. Install:
 
 With uv:
 
 ```sh
-uv tool install /path/to/ebay-handbrake-wrapper
+uv tool install .
 ```
 
 With pipx:
 
 ```sh
-pipx install /path/to/ebay-handbrake-wrapper
+pipx install .
 ```
 
 ## Usage
 
-```sh
-ebay-handbrake
-ebay-handbrake --deadzone 0.1
-ebay-handbrake --debug
+```
+usage: ebay-handbrake [-h] [--deadzone DEADZONE] [--debug]
+
+Bridge a no-name USB handbrake to a virtual Xbox 360 gamepad.
+
+options:
+  -h, --help           show this help message and exit
+  --deadzone DEADZONE  Lower deadzone percentage as a float between 0 and 1 (default: 0.0)
+  --debug              Print handbrake values to the console
 ```
 
-### Options
+## Steam integration
 
-- `--deadzone FLOAT` - Ignore the lower portion of the input range (0.0 to 1.0). Useful if the handbrake doesn't fully return to zero.
-- `--debug` - Print the current handbrake value as a percentage.
+You can start the handbrake automatically when launching a game via Steam launch options:
+
+```sh
+/home/yourusername/.local/bin/ebay-handbrake --deadzone 0.1 & %command%; pgrep ebay-handbrake | xargs kill
+```
+
+This starts `ebay-handbrake` in the background, and launches the game.
+
+This will not work for Flatpak steam installations.
