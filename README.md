@@ -49,14 +49,16 @@ pipx install .
 ## Usage
 
 ```
-usage: ebay-handbrake [-h] [--deadzone DEADZONE] [--debug]
+usage: ebay-handbrake [-h] [--deadzone DEADZONE] [--axis-index AXIS_INDEX] [--debug]
 
 Bridge a no-name USB handbrake to a virtual Xbox 360 gamepad.
 
 options:
-  -h, --help           show this help message and exit
-  --deadzone DEADZONE  Lower deadzone percentage as a float between 0 and 1 (default: 0.0)
-  --debug              Print handbrake values to the console
+  -h, --help            show this help message and exit
+  --deadzone DEADZONE   Lower deadzone percentage as a float between 0 and 1 (default: 0.0)
+  --axis-index AXIS_INDEX
+                        Index of the handbrake axis byte in the USB data packet (default: 3). Use --debug to find your index if the default doesn't work.
+  --debug               Print handbrake values to the console
 ```
 
 ## Steam integration

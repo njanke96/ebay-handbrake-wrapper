@@ -5,7 +5,7 @@ from usb import core, util
 
 VENDOR_ID = 0x046D
 PRODUCT_ID = 0xC219
-HANDBRAKE_BYTE = 3
+DEFAULT_HANDBRAKE_BYTE = 3
 
 
 class Handbrake:
@@ -16,13 +16,15 @@ class Handbrake:
     the current handbrake position as a value from 0 to 255.
     """
 
-    def __init__(self, deadzone: float = 0.0):
+    def __init__(self, deadzone: float = 0.0, axis_index: int = DEFAULT_HANDBRAKE_BYTE, debug_values: bool = False):
         """Open the USB handbrake device.
 
         Args:
             deadzone: A value between 0 and 1 representing the percentage of
                 lower input values to ignore. Values within the deadzone return
                 0, and the remaining range is scaled back to 0-255.
+            axis_byte: Index of the byte in the USB data packet that contains
+                the handbrake axis value.
 
         Raises:
             ValueError: If the device is not found or has no IN endpoint.
@@ -49,6 +51,8 @@ class Handbrake:
         self.dev = dev
         self.descriptor = descriptor
         self.deadzone = deadzone
+        self.axis_byte = axis_index
+        self.debug_values = debug_values
 
     def read(self) -> int:
         """Read the current handbrake position.
@@ -58,11 +62,21 @@ class Handbrake:
             deadzone applied.
         """
         data = self.dev.read(self.descriptor.bEndpointAddress, self.descriptor.wMaxPacketSize, timeout=1000)
-        raw = int(data[HANDBRAKE_BYTE])
+        raw = int(data[self.axis_byte])
+            
         threshold = self.deadzone * 255
         if raw <= threshold:
-            return 0
-        return int((raw - threshold) / (255 - threshold) * 255)
+            final = 0
+        else:
+            final = int((raw - threshold) / (255 - threshold) * 255)
+            
+        if self.debug_values:
+            print(f"Handbrake raw USB data: {data}")
+            print(f"Handbrake ({self.axis_byte}) axis raw: {raw}")
+            print(f"Final handbrake value: {final}")
+            print("\n")
+            
+        return final
 
 
 # Support running the module directly for a value read test

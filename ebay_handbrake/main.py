@@ -15,6 +15,12 @@ def main():
         help="Lower deadzone percentage as a float between 0 and 1 (default: 0.0)",
     )
     parser.add_argument(
+        "--axis-index",
+        type=int,
+        default=3,
+        help="Index of the handbrake axis byte in the USB data packet (default: 3). Use --debug to find your index if the default doesn't work.",
+    )
+    parser.add_argument(
         "--debug",
         action="store_true",
         help="Print handbrake values to the console",
@@ -24,7 +30,7 @@ def main():
     if not 0.0 <= args.deadzone <= 1.0:
         parser.error("--deadzone must be between 0 and 1")
 
-    hb = Handbrake(deadzone=args.deadzone)
+    hb = Handbrake(deadzone=args.deadzone, axis_index=args.axis_index, debug_values=args.debug)
     print("Found the handbrake device.")
 
     gamepad = vg.VX360Gamepad()
@@ -32,7 +38,7 @@ def main():
 
     running = True
 
-    def shutdown(sig, frame):
+    def shutdown(_sig, _frame):
         nonlocal running
         running = False
 
@@ -43,11 +49,7 @@ def main():
             print('\nBye!')
             break
         
-        value = hb.read()
-        if args.debug:
-            print(f"Handbrake value: {value / 255:.0%}")
-
-        gamepad.right_trigger(value=value)
+        gamepad.right_trigger(value=hb.read())
         gamepad.update()
 
     gamepad.reset()
