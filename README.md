@@ -13,7 +13,7 @@ Only Linux is supported, if your handbrake is not working on Windows, this is no
   - I can't imagine a game that would support both racing wheels AND not support control rebinding, but who knows.
 - If you use an X360 controller along with a handbrake, this won't work unless the game supports multiple X360 controllers.
 
-## Quickstart
+## Installation
 
 1. Clone the repo:
 
