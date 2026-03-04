@@ -37,12 +37,14 @@ sudo udevadm trigger
 With uv:
 
 ```sh
+cd path/to/repo
 uv tool install .
 ```
 
 With pipx:
 
 ```sh
+cd path/to/repo
 pipx install .
 ```
 
@@ -69,6 +71,6 @@ You can start the handbrake automatically when launching a game via Steam launch
 /home/yourusername/.local/bin/ebay-handbrake --deadzone 0.1 & %command%; pgrep ebay-handbrake | xargs kill
 ```
 
-This starts `ebay-handbrake` in the background, and launches the game.
+This starts `ebay-handbrake` in the background, and launches the game. When the game exits, it kills all instances of `ebay-handbrake`
 
 This will not work for Flatpak steam installations.
