@@ -73,4 +73,4 @@ You can start the handbrake automatically when launching a game via Steam launch
 
 This starts `ebay-handbrake` in the background, and launches the game. When the game exits, it kills all instances of `ebay-handbrake`
 
-This will not work for Flatpak steam installations.
+This will not work for Flatpak steam installations by default, it might work if you allow the Steam flatpak read access to the path of the `ebay-handbrake` executable.
